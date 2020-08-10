@@ -81,21 +81,21 @@ def updateScreen(board, score, best):
     widthOfBest = screenWidth - lenOfBest - 110
     screen.blit(label, (widthOfBest, 10))
     
-    #--------------------Cells---------------------
-    heightOfCell = widthOfCell = 156
+    #--------------------tiles---------------------
+    heightOftile = widthOftile = 156
     for row in range(4):
         for column in range(4):
-            cell = board[row][column]
-            if cell != 0: # not empty
-                colorOfCell = colors[cell-1]
+            tile = board[row][column]
+            if tile != 0: # not empty
+                colorOftile = colors[tile-1]
                 
-                #--------------Display-frame-of-cell--------------
-                coorOfCell = (29+(widthOfCell+6)*column, 59+(heightOfCell+6)*row, widthOfCell, heightOfCell)
-                pygame.draw.rect(screen, colorOfCell, coorOfCell)
+                #--------------Display-frame-of-tile--------------
+                coorOftile = (29+(widthOftile+6)*column, 59+(heightOftile+6)*row, widthOftile, heightOftile)
+                pygame.draw.rect(screen, colorOftile, coorOftile)
                 
-                #--------------Display-value-of-cell--------------
-                label = numberFont.render("%4d" % 2**cell, 1, white)
-                screen.blit(label, (65+(widthOfCell+6)*column, 118+(heightOfCell+6)*row))
+                #--------------Display-value-of-tile--------------
+                label = numberFont.render("%4d" % 2**tile, 1, white)
+                screen.blit(label, (65+(widthOftile+6)*column, 118+(heightOftile+6)*row))
     
     pygame.display.flip()
 
@@ -111,22 +111,22 @@ def gameOverMsg():
 def gameOver(board):
     for row in range(4):
         for column in range(4):
-            cell = board[row][column]
+            tile = board[row][column]
             neighbours = [board[row+j][column+i] for j,i in ((0,1), (1,0)) if 0 <= row+j <= 3 and 0 <= column+i <= 3]
-            if cell == 0 or cell in neighbours:
+            if tile == 0 or tile in neighbours:
                 return 0
     return 1
 
 def shift(board, plus, rowRange, columnRange):
     for row in rowRange:
         for column in columnRange:
-            cell = board[row][column]
+            tile = board[row][column]
             old_row = row
             old_column = column
             new_row = row + plus[0]
             new_column = column + plus[1]
-            while 0 <= new_row <= 3 and 0 <= new_column <= 3 and cell != 0 and board[new_row][new_column] == 0:
-                board[new_row][new_column] = cell
+            while 0 <= new_row <= 3 and 0 <= new_column <= 3 and tile != 0 and board[new_row][new_column] == 0:
+                board[new_row][new_column] = tile
                 board[old_row][old_column] = 0
                 old_row = new_row
                 old_column = new_column
@@ -137,12 +137,12 @@ def merge(board, plus, rowRange, columnRange):
     newScore = 0
     for row in rowRange:
         for column in columnRange:
-            cell = board[row][column]
+            tile = board[row][column]
             new_row = row + plus[0]
             new_column = column + plus[1]
-            if 0 <= new_row <= 3 and 0 <= new_column <= 3 and cell != 0 and cell == board[new_row][new_column]:
+            if 0 <= new_row <= 3 and 0 <= new_column <= 3 and tile != 0 and tile == board[new_row][new_column]:
                 board[row][column] = 0
-                board[new_row][new_column] = cell + 1
+                board[new_row][new_column] = tile + 1
                 newScore += 2 ** board[new_row][new_column]
     return newScore
 
@@ -204,10 +204,10 @@ def game(best):
                     
                     temp = deepcopy(temp_temp)
                     
-                    emptyCells = [(j,i) for j in range(4) for i in range(4) if board[j][i] == 0]
-                    if emptyCells:
-                        cellAdd = choice(emptyCells)
-                        board[cellAdd[0]][cellAdd[1]] = rand(1,2)
+                    emptytiles = [(j,i) for j in range(4) for i in range(4) if board[j][i] == 0]
+                    if emptytiles:
+                        tileAdd = choice(emptytiles)
+                        board[tileAdd[0]][tileAdd[1]] = rand(1,2)
                     z_flag = False
                 
                 #------------------Ctrl-+-z-----------------------
