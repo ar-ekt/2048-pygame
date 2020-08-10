@@ -4,4 +4,4 @@ https://en.wikipedia.org/wiki/2048_(video_game)
 
 If a move causes three consecutive tiles of the same value to slide together, only the two tiles farthest along the direction of motion will combine. If all four spaces in a row or column are filled with tiles of the same value, a move parallel to that row/column will combine the first two and last two.
 
-<img src="https://user-images.githubusercontent.com/57006850/89811037-47b47a00-db53-11ea-8fd7-15d525ff314b.jpg" width="350">
+<img src="https://user-images.githubusercontent.com/57006850/89811037-47b47a00-db53-11ea-8fd7-15d525ff314b.jpg" width="500" align="center">
