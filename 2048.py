@@ -82,22 +82,44 @@ def updateScreen(board, score, best):
     screen.blit(label, (widthOfBest, 10))
     
     #--------------------tiles---------------------
-    heightOftile = widthOftile = 156
+    heightOfTile = widthOfTile = 156
     for row in range(4):
         for column in range(4):
             tile = board[row][column]
             if tile != 0: # not empty
-                colorOftile = colors[tile-1]
+                colorOfTile = colors[tile-1]
                 
                 #--------------Display-frame-of-tile--------------
-                coorOftile = (29+(widthOftile+6)*column, 59+(heightOftile+6)*row, widthOftile, heightOftile)
-                pygame.draw.rect(screen, colorOftile, coorOftile)
+                widthStart = 29 + (widthOfTile + 6) * column
+                heightStart = 59 + (heightOfTile + 6) * row
+                coorOfTile = (widthStart, heightStart, widthOfTile, heightOfTile)
+                pygame.draw.rect(screen, colorOfTile, coorOfTile)
                 
                 #--------------Display-value-of-tile--------------
                 label = numberFont.render("%4d" % 2**tile, 1, white)
-                screen.blit(label, (65+(widthOftile+6)*column, 118+(heightOftile+6)*row))
+                screen.blit(label, (65+(widthOfTile+6)*column, 118+(heightOfTile+6)*row))
     
     pygame.display.flip()
+
+def showNewTile(coor, value):
+    global screen, colors, numberFont
+    
+    #--------------Display-frame-of-tile--------------
+    heightOfCompleted = widthOfCompleted = 156
+    colorOfTile = colors[value-1]
+    for index in range(14):
+        heightOfTile = widthOfTile = index*10+16
+        diffOfTile = (widthOfCompleted - widthOfTile) // 2
+        widthStart = 29 + (widthOfCompleted + 6) * coor[1] + diffOfTile
+        heightStart = 59 + (heightOfCompleted + 6) * coor[0] + diffOfTile
+        coorOfTile = (widthStart, heightStart, widthOfTile, widthOfTile)
+        pygame.draw.rect(screen, colorOfTile, coorOfTile)
+        pygame.display.flip()
+        sleep(0.008)
+    
+    #--------------Display-value-of-tile--------------
+    label = numberFont.render("%4d" % 2**value, 1, white)
+    screen.blit(label, (65+(widthOfTile+6)*coor[1], 118+(heightOfTile+6)*coor[0]))
 
 def gameOverMsg():
     global screen, red, Font
@@ -172,10 +194,24 @@ def game(best):
     
     arrowKeys = {pygame.K_UP: "up", pygame.K_DOWN: "down", pygame.K_RIGHT: "right", pygame.K_LEFT: "left"}
     z_flag = True
+    newTile_flag = False
     
     while True:
         #--------------------Update-screen----------------
         updateScreen(board, score, best)
+        
+        #----------------Show-new-tile-in-screen----------
+        if newTile_flag:
+            emptytiles = [(j,i) for j in range(4) for i in range(4) if board[j][i] == 0]
+            
+            if emptytiles:
+                coorOfNewTile = choice(emptytiles)
+                valueOfNewTile = rand(1,2)
+                
+                showNewTile(coorOfNewTile, valueOfNewTile)
+                board[coorOfNewTile[0]][coorOfNewTile[1]] = valueOfNewTile
+                
+            newTile_flag = False
         
         #----------------------Game-over------------------
         if gameOver(board):
@@ -203,12 +239,9 @@ def game(best):
                         continue
                     
                     temp = deepcopy(temp_temp)
-                    
-                    emptytiles = [(j,i) for j in range(4) for i in range(4) if board[j][i] == 0]
-                    if emptytiles:
-                        tileAdd = choice(emptytiles)
-                        board[tileAdd[0]][tileAdd[1]] = rand(1,2)
+                        
                     z_flag = False
+                    newTile_flag = True
                 
                 #------------------Ctrl-+-z-----------------------
                 elif event.key == pygame.K_z and pygame.key.get_mods() & pygame.KMOD_CTRL and not z_flag:
@@ -217,7 +250,7 @@ def game(best):
                     z_flag = True
 
 #best-place
-best = 8200
+best = 6288
 
 new_best = game(best)
 if new_best > best:
